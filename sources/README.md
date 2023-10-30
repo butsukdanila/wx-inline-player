@@ -280,7 +280,7 @@ There are currently 3 sets of decoding libraries, namely:
 The difference is:
 1. The baseline file size is smaller (80k smaller than all after gzip), but only supports baseline profiles.
 2. all's profile supports more complete (baseline/main/high), and its performance is better than baseline
-2. h265 mainly supports h265 flv stream. This implementation expands the FLV format and refers to Kingsoft’s expansion requirements. If you have such needs, please refer to [金山的FLV拓展规范](https://github.com/ksvc/FFmpeg/wiki)
+2. h265 mainly supports h265 flv stream. This implementation expands the FLV format and refers to Kingsoft’s expansion requirements. If you have such needs, please refer to [Kingsoft’s FLV expansion specifications](https://github.com/ksvc/FFmpeg/wiki)
 
 We recommend using baseline.asm/baseline.wasm when you play advertising videos/marketing videos/small animation videos that are sensitive to the size of the dependent library, and use it when playing on-demand videos/live videos that are not sensitive to the size of the dependent library. all.asm/all.wasm.
 
