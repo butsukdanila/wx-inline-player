@@ -1,0 +1,2 @@
+set -x
+docker buildx build -t wxip:latest .
