@@ -1,3 +1,0 @@
-[submodule "prj/lib/codec/3rdparty/openh264"]
-	path = prj/lib/codec/3rdparty/openh264
-	url = https://github.com/cisco/openh264.git
