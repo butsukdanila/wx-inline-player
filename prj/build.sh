@@ -9,4 +9,4 @@ set -x
 # build codec
 cd lib/codec
 bash build.sh
-mv combine/prod.* ../../example
+# mv combine/prod.* ../../example

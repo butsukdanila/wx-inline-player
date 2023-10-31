@@ -72,7 +72,7 @@ using namespace std;
 
 class Codec {
 public:
-  Codec() : _decoder(make_shared<Decoder>()),adtsHeader(make_shared<Buffer>()),
+  Codec() : _decoder(make_shared<Decoder>()), adtsHeader(make_shared<Buffer>()),
             sps(make_shared<Buffer>()), pps(make_shared<Buffer>()),
             vps(make_shared<Buffer>()), audioBuffer(nullptr), videoBuffer(nullptr) {
 #ifdef USE_OPEN_H265
