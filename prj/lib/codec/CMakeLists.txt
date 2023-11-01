@@ -43,7 +43,7 @@ set(EM_COMMON_PARAM "\
 #set(EM_CONFIG_PARAM "-s WASM=0 -s LEGACY_VM_SUPPORT=1 -s MEM_INIT_METHOD=0 -s ELIMINATE_DUPLICATE_FUNCTIONS=1")
 
 #<-----wasm----->
-#set(EM_CONFIG_PARAM "-s WASM=1")
+set(EM_CONFIG_PARAM "-s WASM=1")
 
 set(EM_OPTIMIZE_PARAM "\
 --closure 1 \
@@ -52,5 +52,4 @@ set(EM_OPTIMIZE_PARAM "\
 ")
 
 set_target_properties(prod PROPERTIES LINK_FLAGS "${EM_COMMON_PARAM} ${EM_CONFIG_PARAM} ${EM_OPTIMIZE_PARAM}")
-# target_link_libraries(prod openh264wasm stream demuxer factor tinyh264 libde265 codec)
-target_link_libraries(prod stream demuxer factor tinyh264 libde265 codec)
+target_link_libraries(prod openh264wasm stream demuxer factor tinyh264 libde265 codec)
