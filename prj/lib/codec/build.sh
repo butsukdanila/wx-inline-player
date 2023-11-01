@@ -1,54 +1,44 @@
-#!/bin/bash
 
-set -x
-rm -rf ./bin
-rm -rf ./lib
-rm -rf ./build
+function clean() {
+	echo ">> Cleaning:"
+	rm -rf ./bin
+	rm -rf ./lib
+	rm -rf ./build
+	echo "<<"
+}
 
-# mkdir ./build
-# cd ./build
+function build() {
+	echo ">> Building: $@"
+	if [[ $# -ne 2 ]]; then
+		echo "Argument count is incorrect. Expected: 2"
+		return 1;
+	fi
+	if [[ "$1" != "wasm" && "$1" != "asm" ]]; then
+		echo "Compilation backend is incorrect. Expected: asm | wasm"
+		return 1;
+	fi
+	if [[ "$2" != "baseline" && "$2" != "h264" && "$2" != "h265" ]]; then
+		echo "Compilation profile is incorrect. Expected: baseline | h264 | h265"
+		return 1;
+	fi
+	clean;
+	mkdir build
+	cd build
+	emcmake cmake .. -DCODEC_BACKEND="$1" -DCODEC_PROFILE="$2"
+	# emmake make -j 4 VERBOSE=1
+	emmake make -j 4
+	# mv ../bin/prod.js ../bin/$2.$1.js
+	echo "<<"
+}
 
-# # baseline decode library
-# node ../tool/compile.js wasm baseline
-# emcmake cmake ..
-# emmake make -j 4
-# mv ../bin/prod.js ../bin/baseline.wasm.js
+function help() {
+printf "\
+this is help
+"
+}
 
-# node ../tool/compile.js asm baseline
-# emcmake cmake ..
-# emmake make -j 4
-# mv ../bin/prod.js ../bin/baseline.asm.js
-
-# node ../tool/compile.js
-# node ../tool/wrapper.js ../bin/baseline.wasm.js baseline.wasm
-# node ../tool/wrapper.js ../bin/baseline.asm.js baseline.asm
-
-# # all decode library
-# node ../tool/compile.js wasm all
-# emcmake cmake ..
-# emmake make -j 4
-# mv ../bin/prod.js ../bin/all.wasm.js
-
-# node ../tool/compile.js asm all
-# emcmake cmake ..
-# emmake make -j 4
-# mv ../bin/prod.js ../bin/all.asm.js
-
-# node ../tool/compile.js
-# node ../tool/wrapper.js ../bin/all.wasm.js all.wasm
-# node ../tool/wrapper.js ../bin/all.asm.js all.asm
-
-# # h265 decode library
-# node ../tool/compile.js wasm h265
-# emcmake cmake ..
-# emmake make -j 4
-# mv ../bin/prod.js ../bin/h265.wasm.js
-
-# node ../tool/compile.js asm h265
-# emcmake cmake ..
-# emmake make -j 4
-# mv ../bin/prod.js ../bin/h265.asm.js
-
-# node ../tool/compile.js
-# node ../tool/wrapper.js ../bin/h265.wasm.js h265.wasm
-# node ../tool/wrapper.js ../bin/h265.asm.js h265.asm
+case $1 in
+  build) { build "${@:2}"; };;
+  clean) { clean;		   };;
+  *) 	 { help;		   };;
+esac

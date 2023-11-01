@@ -1,27 +1,33 @@
 cmake_minimum_required(VERSION 3.2)
-project(CODEC)
+project(multi-codec)
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_MACOSX_RPATH 1)
-set(DISABLE_SSE ON)
 
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
+include_directories(3rdparty/ src/)
 
-include_directories(${PROJECT_SOURCE_DIR}/src)
-include_directories(${PROJECT_SOURCE_DIR}/3rdparty)
+if (${CODEC_PROFILE} STREQUAL "h264")
+  message(FATAL_ERROR "h264 UNSUPPORTED")
+  # todo compile from source
+  link_directories(3rdparty/openh264)
+  link_libraries(openh264wasm)
+  add_compile_definitions(USE_OPEN_H264)
+elseif (${CODEC_PROFILE} STREQUAL "h265")
+  set(DISABLE_SSE ON)
+  add_subdirectory(3rdparty/de265)
+  add_compile_definitions(USE_OPEN_H265)
+  link_libraries(libde265)
+endif()
 
-link_directories(${PROJECT_SOURCE_DIR}/3rdparty/openh264)
-
-add_subdirectory(3rdparty/de265)
 add_subdirectory(3rdparty/tinyh264)
 add_subdirectory(src/stream)
 add_subdirectory(src/factor)
 add_subdirectory(src/demuxer)
 add_subdirectory(src/codec)
 
-#add_subdirectory(src/helper)
-add_executable(prod ./src/main.cpp)
-#target_link_libraries(prod openh264osx stream demuxer factor tinyh264 libde265 codec helper)
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/src/main.cpp)
+target_link_libraries(${PROJECT_NAME} tinyh264 stream factor demuxer codec)
 
 set(EM_COMMON_PARAM "\
 -O3 \
@@ -39,17 +45,15 @@ set(EM_COMMON_PARAM "\
 -s EXPORTED_FUNCTIONS=\"['_codecInit', '_codecSetBridgeName', '_codecDecode', '_codecSetVideoBuffer', '_codecSetAudioBuffer', '_codecTry2Seek', '_codecFree']\" \
 ")
 
-#<-----asm----->
-#set(EM_CONFIG_PARAM "-s WASM=0 -s LEGACY_VM_SUPPORT=1 -s MEM_INIT_METHOD=0 -s ELIMINATE_DUPLICATE_FUNCTIONS=1")
+if (${CODEC_BACKEND} STREQUAL "wasm")
+  set(EM_PARAM_BACKEND "-s WASM=1")
+elseif(${CODEC_BACKEND} STREQUAL "asm")
+  set(EM_PARAM_BACKEND "-s WASM=0 -s LEGACY_VM_SUPPORT=1 -s MEM_INIT_METHOD=0 -s ELIMINATE_DUPLICATE_FUNCTIONS=1")
+endif()
 
-#<-----wasm----->
-set(EM_CONFIG_PARAM "-s WASM=1")
+set(EM_OPTIMIZE_PARAM "--closure 1 --memory-init-file 0 --llvm-lto 3")
 
-set(EM_OPTIMIZE_PARAM "\
---closure 1 \
---memory-init-file 0 \
---llvm-lto 3 \
-")
-
-set_target_properties(prod PROPERTIES LINK_FLAGS "${EM_COMMON_PARAM} ${EM_CONFIG_PARAM} ${EM_OPTIMIZE_PARAM}")
-target_link_libraries(prod openh264wasm stream demuxer factor tinyh264 libde265 codec)
+set_target_properties(${PROJECT_NAME} 
+  PROPERTIES 
+    LINK_FLAGS "${EM_COMMON_PARAM} ${EM_PARAM_BACKEND} ${EM_OPTIMIZE_PARAM}"
+)
