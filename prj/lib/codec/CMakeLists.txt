@@ -22,13 +22,6 @@ include_directories(3rdparty/)
 add_subdirectory(3rdparty/tinyh264)
 target_link_libraries(${PROJECT_NAME} tinyh264)
 
-include_directories(src/)
-add_subdirectory(src/stream)
-add_subdirectory(src/factor)
-add_subdirectory(src/demuxer)
-add_subdirectory(src/codec)
-target_link_libraries(${PROJECT_NAME} stream factor demuxer codec)
-
 if (${CODEC_PROFILE} STREQUAL "h264")
   message(FATAL_ERROR "h264 UNSUPPORTED")
   # todo compile from source
@@ -41,6 +34,13 @@ elseif (${CODEC_PROFILE} STREQUAL "h265")
   add_compile_definitions(USE_OPEN_H265)
   target_link_libraries(${PROJECT_NAME} libde265)
 endif()
+
+include_directories(src/)
+add_subdirectory(src/stream)
+add_subdirectory(src/factor)
+add_subdirectory(src/demuxer)
+add_subdirectory(src/codec)
+target_link_libraries(${PROJECT_NAME} stream factor demuxer codec)
 
 set(EM_COMMON_PARAM "\
   -O3 \
