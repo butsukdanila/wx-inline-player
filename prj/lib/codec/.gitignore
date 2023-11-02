@@ -1,6 +1,2 @@
+__build
 __graph
-bin
-build
-cmake-build-debug
-.idea
-lib
