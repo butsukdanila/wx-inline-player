@@ -10,7 +10,7 @@ cd ./build
 
 # baseline decode library
 node ../tool/compile.js wasm baseline
-emcmake cmake .. -DCODEC_BACKEND=wasm -DCODEC_PROFILE=baseline
+emcmake cmake ..
 emmake make -j 4
 mv ../bin/prod.js ../bin/baseline.wasm.js
 
