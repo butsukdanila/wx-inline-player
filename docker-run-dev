@@ -5,4 +5,6 @@ docker run \
 	--rm \
 	--name wxip \
 	--mount type=bind,source="$(pwd)/prj",target="/prj" \
-	wxip:latest
+	--workdir /prj \
+	wxip:latest \
+	bash

@@ -19,5 +19,3 @@ RUN cd /root \
 
 RUN echo "source /root/emsdk/emsdk_env.sh" >> /root/.bashrc \
  && echo "JAVA = '/usr/bin/java'" >> /root/emsdk/.emscripten
-
-CMD [ "/bin/bash" ]
