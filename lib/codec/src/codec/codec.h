@@ -51,7 +51,6 @@ LICENSED WORK OR THE USE OR OTHER DEALINGS IN THE LICENSED WORK.
 #define CODEC_CODEC_H
 
 #include <string>
-#include "config.h"
 #include "demuxer/decoder.h"
 
 #ifdef USE_OPEN_H265
