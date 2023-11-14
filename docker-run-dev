@@ -1,10 +1,10 @@
 #!/bin/bash
-set -x
+d_script=$(realpath $(dirname $0));
 docker run \
 	-it \
 	--rm \
 	--name wxip \
-	--mount type=bind,source="$(pwd)/prj",target="/prj" \
+	--mount type=bind,source="$d_script",target="/prj" \
 	--workdir /prj \
 	wxip:latest \
 	bash

@@ -1,6 +1,6 @@
 FROM ubuntu:22.04
 
-# update packages
+# install dependencies
 RUN apt-get update \
  && apt-get install -y \
  	curl wget git \
