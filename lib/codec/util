@@ -11,7 +11,7 @@ function clean() {
 }
 
 profiles=("base" "h264" "h265")
-backends=("asm" "wasm")
+backends=("wasm" "asm")
 
 function __validate_args() {
   local IFS="|"
@@ -53,23 +53,23 @@ function __graph_variant() {
 }
 
 function __meta_call() {
-  local proc_type=$1
-  local proc_tdir=$2
-  local proc_func=$3
-  echo ">> $proc_type >>"
-  rm -rf "$proc_tdir"
-  mkdir "$proc_tdir"
-  cd "$proc_tdir"
+  local call_type=$1
+  local call_tdir=$2
+  local call_func=$3
+  echo ">> $call_type >>"
+  rm -rf "$call_tdir"
+  mkdir "$call_tdir"
+  cd "$call_tdir"
   if [ $# -eq 3 ]; then
     for pval in "${profiles[@]}"; do
       for bval in "${backends[@]}"; do
-        eval "$proc_func" "$pval" "$bval"
+        eval "$call_func" "$pval" "$bval"
       done
     done
   elif [ $# -eq 5 ]; then
     local pval=$4
     local bval=$5
-    eval "$proc_func" "$pval" "$bval"
+    eval "$call_func" "$pval" "$bval"
   else
     help
     return 1

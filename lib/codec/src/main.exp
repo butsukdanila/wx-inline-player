@@ -1,0 +1,7 @@
+_codecInit
+_codecSetBridgeName
+_codecDecode
+_codecSetVideoBuffer
+_codecSetAudioBuffer
+_codecTry2Seek
+_codecFree

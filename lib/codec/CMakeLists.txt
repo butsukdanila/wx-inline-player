@@ -44,30 +44,29 @@ target_link_libraries(${PROJECT_NAME} stream factor demuxer codec)
 
 set(EM_COMMON_PARAM "\
   -O3 \
-  -s ENVIRONMENT=\"web,worker\" \
-  -s SINGLE_FILE=1 \
-  -s FETCH=0 \
-  -s DISABLE_EXCEPTION_CATCHING=0 \
-  -s ERROR_ON_UNDEFINED_SYMBOLS=0 \
-  -s NO_EXIT_RUNTIME=0 \
-  -s FILESYSTEM=0 \
-  -s INVOKE_RUN=0 \
-  -s ASSERTIONS=1 \
-  -s TOTAL_MEMORY=16777216 \
-  -s ALLOW_MEMORY_GROWTH=1 \
-  -s EXPORTED_FUNCTIONS=\"['_codecInit', '_codecSetBridgeName', '_codecDecode', '_codecSetVideoBuffer', '_codecSetAudioBuffer', '_codecTry2Seek', '_codecFree']\" \
+  -sASSERTIONS=1 \
+  -sINVOKE_RUN=0 \
+  -sEXIT_RUNTIME=1 \
+  -sINITIAL_MEMORY=16777216 \
+  -sALLOW_MEMORY_GROWTH=1 \
+  -sENVIRONMENT=\"web,worker\" \
+  -sDISABLE_EXCEPTION_CATCHING=0 \
+  -sFILESYSTEM=0 \
+  -sEXPORTED_FUNCTIONS=@${PROJECT_SOURCE_DIR}/src/main.exp \
+  -sERROR_ON_UNDEFINED_SYMBOLS=0 \
+  -sFETCH=0 \
+  -sSINGLE_FILE=1 \
 ")
 
 if (${CODEC_BACKEND} STREQUAL "wasm")
-  set(EM_PARAM_BACKEND "-s WASM=1")
+  set(EM_PARAM_BACKEND "-sWASM=1")
 elseif(${CODEC_BACKEND} STREQUAL "asm")
-  set(EM_PARAM_BACKEND "-s WASM=0 -s LEGACY_VM_SUPPORT=1 -s MEM_INIT_METHOD=0 -s ELIMINATE_DUPLICATE_FUNCTIONS=1")
+  set(EM_PARAM_BACKEND "-sWASM=0 -sLEGACY_VM_SUPPORT=1")
 endif()
 
 set(EM_OPTIMIZE_PARAM "\
   --closure 1 \
   --memory-init-file 0 \
-  --llvm-lto 3 \
 ")
 
 set_target_properties(${PROJECT_NAME} 
