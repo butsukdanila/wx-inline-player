@@ -41,7 +41,7 @@ function __build_variant() {
   local bval=$2
   emcmake cmake .. -DCODEC_PROFILE="$pval" -DCODEC_BACKEND="$bval"
   emmake make -j 4
-  mv "../.output/bin/player-codec.js" "../.output/bin/$pval.$bval.js"
+  mv "$d_output/bin/player-codec.js" "$d_output/bin/$pval.$bval.js"
 }
 
 # function __graph_variant() {
