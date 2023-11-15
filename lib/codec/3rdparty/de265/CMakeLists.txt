@@ -1,4 +1,4 @@
-project (libde265)
+project (de265)
 cmake_minimum_required (VERSION 2.8.8)
 
 # The version number.
