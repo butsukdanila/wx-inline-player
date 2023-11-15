@@ -1,12 +1,15 @@
 #!/bin/bash
 d_script="$(dirname $0)"
-d_build="$(realpath "$d_script/__build")"
-d_graph="$(realpath "$d_script/__graph")"
+d_output="$(realpath "$d_script/.out")"
+d_cmake="$(realpath "$d_script/.mid")"
+d_build="$d_cmake"
+# d_graph="$d_cmake/graph"
 
 function clean() {
   echo ">> cleaning >>"
+  rm -rf "$d_output"
   rm -rf "$d_build"
-  rm -rf "$d_graph"
+  # rm -rf "$d_graph"
   echo "<<"
 }
 
@@ -38,38 +41,39 @@ function __build_variant() {
   local bval=$2
   emcmake cmake .. -DCODEC_PROFILE="$pval" -DCODEC_BACKEND="$bval"
   emmake make -j 4
-  mv "bin/player-codec.js" "bin/$pval.$bval.js"
+  mv "../.output/bin/player-codec.js" "../.output/bin/$pval.$bval.js"
 }
 
-function __graph_variant() {
-  if !(__validate_args "${@}"); then
-    return 1;
-  fi
-  local pval=$1
-  local bval=$2
-  local name=$1.$2.dot
-  emcmake cmake .. -DCODEC_PROFILE="$pval" -DCODEC_BACKEND="$bval" --graphviz="$name"
-  dot -Tpng -O "$name"
-}
+# function __graph_variant() {
+#   if !(__validate_args "${@}"); then
+#     return 1;
+#   fi
+#   local pval=$1
+#   local bval=$2
+#   local name=$1.$2.dot
+#   emcmake cmake .. -DCODEC_PROFILE="$pval" -DCODEC_BACKEND="$bval" --graphviz="$name"
+#   dot -Tpng -O "$name"
+# }
 
 function __meta_call() {
-  local call_type=$1
-  local call_tdir=$2
-  local call_func=$3
-  echo ">> $call_type >>"
-  rm -rf "$call_tdir"
-  mkdir "$call_tdir"
-  cd "$call_tdir"
+  local t_call=$1
+  local d_call=$2
+  local f_call=$3
+  echo ">> $t_call >>"
+  rm -rf "$d_call"
+  rm -rf "$d_output"
+  mkdir "$d_call"
+  cd "$d_call"
   if [ $# -eq 3 ]; then
     for pval in "${profiles[@]}"; do
       for bval in "${backends[@]}"; do
-        eval "$call_func" "$pval" "$bval"
+        eval "$f_call" "$pval" "$bval"
       done
     done
   elif [ $# -eq 5 ]; then
     local pval=$4
     local bval=$5
-    eval "$call_func" "$pval" "$bval"
+    eval "$f_call" "$pval" "$bval"
   else
     help
     return 1
@@ -83,7 +87,7 @@ printf "this is help\n"
 
 case $1 in
   build) { __meta_call "building" "$d_build" "__build_variant" "${@:2}"; };;
-  graph) { __meta_call "graphing" "$d_graph" "__graph_variant" "${@:2}"; };;
+  # graph) { __meta_call "graphing" "$d_graph" "__graph_variant" "${@:2}"; };;
   clean) { clean; };;
   *)     { help;	};;
 esac
