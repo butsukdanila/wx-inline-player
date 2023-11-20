@@ -1,0 +1,3 @@
+[submodule "lib/codec/openh264"]
+	path = lib/codec/openh264
+	url = https://github.com/cisco/openh264.git
