@@ -18,4 +18,5 @@ RUN cd /root \
  && ./emsdk activate latest
 
 RUN echo "source /root/emsdk/emsdk_env.sh" >> /root/.bashrc \
- && echo "JAVA = '/usr/bin/java'" >> /root/emsdk/.emscripten
+ && echo "JAVA = '/usr/bin/java'" >> /root/emsdk/.emscripten \
+ && git config --global --add safe.directory '*'
