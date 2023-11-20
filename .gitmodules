@@ -1,3 +1,0 @@
-[submodule "lib/codec/3rdparty/openh264"]
-	path = lib/codec/3rdparty/openh264
-	url = https://github.com/butsukdanila/openh264.git
