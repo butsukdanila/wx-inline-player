@@ -7,4 +7,4 @@ docker run \
 	--mount type=bind,source="$d_script",target="/prj" \
 	--workdir /prj \
 	wxip:latest \
-	bash
+	bash -c "$@"

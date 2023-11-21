@@ -7,7 +7,6 @@ d_bin="$(realpath "$d_own/.bin")"
 d_src="$(realpath "$d_own/src")"
 d_lib="$(realpath "$d_own/lib/codec")"
 
-
 rm -rf "$d_bin"
 mkdir "$d_bin"
 
