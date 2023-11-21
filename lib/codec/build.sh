@@ -32,17 +32,13 @@ function __build_variant() {
   if !(__validate_args "${@}"); then
     return 1;
   fi
-  local nval="libcodec"
   local pval=$1
   local bval=$2
-  
   emcmake cmake .. -Wno-dev \
-    -DCODEC_NAME="$nval" \
-    -DCODEC_PROFILE="$pval" \
-    -DCODEC_BACKEND="$bval" \
+    -Dlibcodec-profile="$pval" \
+    -Dlibcodec-backend="$bval" \
     -DCMAKE_RUNTIME_OUTPUT_DIRECTORY="$d_out"
   emmake make -j 8
-  mv "$d_out/$nval.js" "$d_out/$pval.$bval.js"
   node ../tool/wrapper.js "$d_out" "$pval.$bval"
 }
 

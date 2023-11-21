@@ -16,4 +16,4 @@ npx parcel build $d_src/index.js --no-source-maps --dist-dir $d_bin
 
 # build codec
 bash $d_lib/build.sh
-cp $d_lib/.out/*.prod.js $d_bin
+mv $d_lib/.out/*.prod.js $d_bin
