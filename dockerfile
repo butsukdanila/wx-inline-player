@@ -10,6 +10,11 @@ RUN apt-get update \
 	openjdk-19-jre \
  && rm -rf /var/lib/apt/lists/*
 
+# update node
+RUN npm cache clean -f \
+ && npm install -g n \
+ && n stable
+
 # install emsdk (1.38.45)
 RUN cd /root \
  && git clone https://github.com/emscripten-core/emsdk.git \
