@@ -2,11 +2,19 @@
 
 set -x
 
-# build index.js
-# parcel build src/index.js --no-source-maps --target browser
-# mv dist/* ./example
+d_own="$(dirname $0)"
+d_bin="$(realpath "$d_own/.bin")"
+d_src="$(realpath "$d_own/src")"
+d_lib="$(realpath "$d_own/lib/codec")"
+
+
+rm -rf "$d_bin"
+mkdir "$d_bin"
+
+# build index
+build index.js
+npx parcel build $d_src/index.js --no-source-maps --dist-dir $d_bin
 
 # build codec
-cd lib/codec
-bash build.sh
-mv combine/prod.* ../../example
+bash $d_lib/build.sh
+cp $d_lib/.out/*.prod.js $d_bin
