@@ -12,7 +12,6 @@ rm -rf "$d_bin"
 mkdir "$d_bin"
 
 # build index
-build index.js
 npx parcel build $d_src/index.js --no-source-maps --dist-dir $d_bin
 
 # build codec
