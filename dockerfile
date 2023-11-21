@@ -15,7 +15,7 @@ RUN npm cache clean -f \
  && npm install -g n \
  && n stable
 
-# install emsdk (1.38.45)
+# install emsdk
 RUN cd /root \
  && git clone https://github.com/emscripten-core/emsdk.git \
  && cd emsdk \
