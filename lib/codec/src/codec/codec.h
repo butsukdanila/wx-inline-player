@@ -62,7 +62,7 @@ LICENSED WORK OR THE USE OR OTHER DEALINGS IN THE LICENSED WORK.
 #ifdef USE_OPEN_H265
 #include "de265/libde265/de265.h"
 #elif defined(USE_OPEN_H264)
-#include "openh264/codec/api/svc/codec_api.h"
+#include "openh264/codec/api/wels/codec_api.h"
 #else
 #include "tinyh264/tinyh264.h"
 #endif
