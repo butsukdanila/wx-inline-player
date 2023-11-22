@@ -1,4 +1,4 @@
 #!/bin/bash
 set -x
 ./docker-build
-./docker-run-dev "source /root/emsdk/emsdk_env.sh && source /prj/build.sh"
+./docker-run-dev -c "source /root/emsdk/emsdk_env.sh && source /prj/build.sh"
