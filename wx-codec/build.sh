@@ -1,71 +1,53 @@
 #!/bin/bash
+set -e
 
-d_src="$(dirname $0)"
+own_d=$(realpath $(dirname $0))
+mid_d=$(realpath $own_d/.mid); [ -d $mid_d ] || mkdir $mid_d
+out_d=$(realpath $own_d/.out); [ -d $out_d ] || mkdir $out_d
 
-d_mid="$(realpath "$d_src/.mid")"
-rm -rf "$d_mid"
-
-d_out="$(realpath "$d_src/.out")"
-rm -rf "$d_out"
-
-profiles=("base" "h264" "h265")
-backends=("wasm" "jasm")
-
-function __validate_args() {
-  local IFS="|"
-  local pval=$1
-  local preg="\<${1}\>"
-  if [[ ! ${profiles[@]} =~ $preg ]]; then
-    echo "invalid codec profile: $pval. available: ${profiles[*]}"
-    return 1;
-  fi
-  local bval=$2
-  local breg="\<${2}\>"
-  if [[ ! ${backends[@]} =~ $breg ]]; then
-    echo "invalid codec backend: $bval. available: ${backends[*]}"
-    return 1;
-  fi
-  return 0;
-}
+profiles_support=("base" "h264" "h265")
+backends_support=("wasm" "jasm")
 
 function __build_variant() {
-  if !(__validate_args "${@}"); then
-    return 1;
-  fi
-  local pval=$1
-  local bval=$2
-  emcmake cmake .. -Wno-dev \
-    -Dlibcodec-profile="$pval" \
-    -Dlibcodec-backend="$bval" \
-    -DCMAKE_RUNTIME_OUTPUT_DIRECTORY="$d_out"
-  emmake make -j 8
-  # node ../tool/wrapper.js "$d_out" "$pval.$bval"
+  local profile=$1
+  local backend=$2
+  local rebuild=$3
+  echo
+  echo "[Profile=$profile, Backend=$backend, Rebuild=$rebuild]"
+
+  local var_mid_d=$(realpath $mid_d/$profile.$backend)
+  [ -d $var_mid_d ] || mkdir $var_mid_d
+
+  pushd $var_mid_d > /dev/null
+    emcmake cmake $own_d -Wno-dev \
+      -DLIBCODEC_PROFILE=$profile \
+      -DLIBCODEC_BACKEND=$backend \
+      -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=$out_d
+    if [ $rebuild = true ]; then
+      emmake make clean
+    fi
+    emmake make -j 16
+  popd > /dev/null
+  # node ../tool/wrapper.js "$out_d" "$pval.$bval"
 }
 
-mkdir "$d_mid"
-cd "$d_mid"
-
-if [ $# -eq 0 ]; then
-  for pval in "${profiles[@]}"; do
-    for bval in "${backends[@]}"; do
-      __build_variant "$pval" "$bval"
-    done
-  done
-elif [ $# -eq 1 ]; then
-  pval=$1
-  if [[ ${profiles[@]} =~ $pval ]]; then
-    for bval in "${backends[@]}"; do
-      __build_variant "$pval" "$bval"
-    done
+profiles=()
+rebuild=false
+for arg in $@; do
+  argexp="\<$arg\>"
+  if [[ ${profiles_support[@]} =~ $argexp ]]; then
+    [[ ! ${profiles[@]} =~ $argexp ]] && profiles+=("$arg")
+  elif [ $arg == "--rebuild" ]; then
+    rebuild=true
   else
-    echo "invalid codec profile: $pval. available: ${profiles[*]}"
-    return 1
+    echo "unsupported argument: $arg"
+    exit 1
   fi
-elif [ $# -eq 2 ]; then
-  pval=$1
-  bval=$2
-  __build_variant "$pval" "$bval"
-else
-  echo "unsupported number of arguments"
-  return 1
-fi
+done
+
+profiles=${profiles[@]:-${profiles_support[@]}}
+for profile in ${profiles[@]}; do
+  for backend in ${backends_support[@]}; do
+    __build_variant $profile $backend $rebuild
+  done
+done
