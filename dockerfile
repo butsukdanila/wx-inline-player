@@ -1,14 +1,22 @@
 FROM ubuntu:22.04
 
-# install dependencies
+# install packages
 RUN apt-get update \
  && apt-get install -y \
- 	curl wget git \
-	make cmake \
+ 	sudo curl wget git make cmake \
 	python3 python3-distutils python3-apt python-is-python3 \
-	npm \
-	openjdk-19-jre \
+	npm openjdk-19-jre \
  && rm -rf /var/lib/apt/lists/*
+
+# create user
+ARG USERNAME=duser
+ARG USER_UID=1000
+ARG USER_GID=${USER_UID}
+RUN groupadd --gid ${USER_GID} ${USERNAME} \
+ && useradd --uid ${USER_UID} --gid ${USER_GID} -m ${USERNAME} \
+ && echo ${USERNAME} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${USERNAME} \
+ && chmod 0440 /etc/sudoers.d/${USERNAME} \
+ && chown -R ${USER_UID}:${USER_GID} /home/${USERNAME}
 
 # update node
 RUN npm cache clean -f \
@@ -16,12 +24,14 @@ RUN npm cache clean -f \
  && n stable
 
 # install emsdk
-RUN cd /root \
+RUN cd /home/${USERNAME} \
  && git clone https://github.com/emscripten-core/emsdk.git \
  && cd emsdk \
  && ./emsdk install latest \
  && ./emsdk activate latest
 
-RUN echo "source /root/emsdk/emsdk_env.sh" >> /root/.bashrc \
- && echo "JAVA = '/usr/bin/java'" >> /root/emsdk/.emscripten \
+RUN echo "source /home/${USERNAME}/emsdk/emsdk_env.sh" >> /home/${USERNAME}/.bashrc \
+ && echo "JAVA = '/usr/bin/java'" >> /home/${USERNAME}/emsdk/.emscripten \
  && git config --global --add safe.directory '*'
+
+USER ${USERNAME}

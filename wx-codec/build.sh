@@ -39,7 +39,7 @@ function __build_variant() {
     -Dlibcodec-backend="$bval" \
     -DCMAKE_RUNTIME_OUTPUT_DIRECTORY="$d_out"
   emmake make -j 8
-  node ../tool/wrapper.js "$d_out" "$pval.$bval"
+  # node ../tool/wrapper.js "$d_out" "$pval.$bval"
 }
 
 mkdir "$d_mid"
