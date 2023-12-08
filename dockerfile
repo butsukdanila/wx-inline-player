@@ -28,10 +28,8 @@ RUN cd /home/${USERNAME} \
  && git clone https://github.com/emscripten-core/emsdk.git \
  && cd emsdk \
  && ./emsdk install latest \
- && ./emsdk activate latest
-
-RUN echo "source /home/${USERNAME}/emsdk/emsdk_env.sh" >> /home/${USERNAME}/.bashrc \
- && echo "JAVA = '/usr/bin/java'" >> /home/${USERNAME}/emsdk/.emscripten \
- && git config --global --add safe.directory '*'
+ && ./emsdk activate latest \
+ && echo "source /home/${USERNAME}/emsdk/emsdk_env.sh" >> /home/${USERNAME}/.profile \
+ && echo "JAVA = '/usr/bin/java'" >> ./.emscripten
 
 USER ${USERNAME}

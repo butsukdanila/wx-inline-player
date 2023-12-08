@@ -1,2 +1,0 @@
-#!/bin/bash
-docker run --rm -v ./wx-codec:/prj -w /prj --name wxip u22:wxip bash -c './build.sh'

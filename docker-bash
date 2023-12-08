@@ -1,2 +1,2 @@
 #!/bin/bash
-docker run -it --rm -v ./:/prj -w /prj --name wxip u22:wxip bash
+docker run -it --rm -v ./:/prj -w /prj --name wxip u22:wxip bash -l "$@"
